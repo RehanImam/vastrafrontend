@@ -139,7 +139,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                         <img
                           src={item.images[0]}
                           alt={item.name}
-                          className="w-full h-full object-cover"
+                          className="product-image w-full h-full object-cover"
                         />
 
                       </Link>

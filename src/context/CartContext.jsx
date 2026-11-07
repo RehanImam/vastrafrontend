@@ -14,6 +14,7 @@ import {
   normalizeCategory,
   PRODUCT_SIZES,
 } from "../data/productOptions";
+import API_BASE_URL from "../config/api";
 
 const normalizeProduct = (product, fallbackId = Date.now()) => {
   const images = Array.isArray(product?.images) && product.images.length > 0
@@ -64,7 +65,7 @@ export const CartProvider = ({ children }) => {
   const [dbProducts, setDbProducts] = useState([]);
 
   const refreshProducts = useCallback(async () => {
-    const response = await fetch("https://auth-backend-gules.vercel.app/api/v1/products");
+    const response = await fetch(`${API_BASE_URL}/products`);
     const payload = await response.json();
     if (!response.ok) {
       throw new Error(payload.message || "Failed to load products");

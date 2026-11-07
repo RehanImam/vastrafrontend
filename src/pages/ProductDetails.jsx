@@ -64,7 +64,7 @@ const ProductDetails = () => {
                 <img
                   src={product.images[selectedImage]}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  className="product-image w-full h-full object-cover"
                 />
               </div>
 
@@ -97,7 +97,7 @@ const ProductDetails = () => {
                   <img
                     src={image}
                     alt={`${product.name} ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="product-image w-full h-full object-cover"
                   />
                 </button>
               ))}

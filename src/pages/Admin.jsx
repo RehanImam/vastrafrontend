@@ -4,19 +4,16 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import {
   getProductDisplayName,
-  getStoredProductName,
   isBestSellerProduct,
   normalizeCategory,
   PRODUCT_CATEGORIES,
 } from "../data/productOptions";
-
-const API_BASE = "https://auth-backend-gules.vercel.app/api/v1";
+import API_BASE_URL from "../config/api";
 
 const emptyForm = {
   productName: "",
   category: "Suit",
   price: "",
-  description: "",
   url: "",
   isBestSeller: false,
 };
@@ -30,10 +27,13 @@ const readApiResponse = async (response, operation) => {
   }
 };
 
-const getAuthHeaders = (json = false) => ({
-  ...(json ? { "Content-Type": "application/json" } : {}),
-  Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
-});
+const getAuthHeaders = (json = false) => {
+  const accessToken = localStorage.getItem("accessToken");
+  return {
+    ...(json ? { "Content-Type": "application/json" } : {}),
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+  };
+};
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ const Admin = () => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE}/products`, { credentials: "include" });
+      const response = await fetch(`${API_BASE_URL}/products`, { credentials: "include" });
       const payload = await readApiResponse(response, "Loading products");
       if (!response.ok) throw new Error(payload.message || "Failed to load products");
       setProducts(payload.data || []);
@@ -66,8 +66,9 @@ const Admin = () => {
   }, [user, isAdmin, fetchProducts]);
 
   const uploadToCloudinary = async (file) => {
-    const signatureResponse = await fetch(`${API_BASE}/upload-signature`, {
+    const signatureResponse = await fetch(`${API_BASE_URL}/upload-signature`, {
       credentials: "include",
+      headers: getAuthHeaders(),
     });
     const signaturePayload = await readApiResponse(signatureResponse, "Getting the image upload signature");
     if (!signatureResponse.ok || !signaturePayload.signature) {
@@ -170,13 +171,10 @@ const Admin = () => {
     setLoading(true);
     setMessage("");
     const payload = {
-      productName: getStoredProductName(
-        form.productName.trim(),
-        editingId ? form.isBestSeller : uploadMode === "bestSeller"
-      ),
+      productName: form.productName.trim(),
       category: form.category,
       price: Number(form.price),
-      description: form.description.trim(),
+      description: `${form.productName.trim()} - ${form.category} collection.`,
       url: form.url,
       images: [form.url],
       isBestSeller: editingId ? form.isBestSeller : uploadMode === "bestSeller",
@@ -184,7 +182,7 @@ const Admin = () => {
 
     try {
       const response = await fetch(
-        editingId ? `${API_BASE}/products/${editingId}` : `${API_BASE}/products`,
+        editingId ? `${API_BASE_URL}/products/${editingId}` : `${API_BASE_URL}/products`,
         {
           method: editingId ? "PATCH" : "POST",
           credentials: "include",
@@ -211,7 +209,6 @@ const Admin = () => {
       productName: getProductDisplayName(product.productName || product.name),
       category: normalizeCategory(product.category),
       price: String(product.price ?? ""),
-      description: product.description || "",
       url: product.url || product.images?.[0] || "",
       isBestSeller: isBestSellerProduct(product),
     });
@@ -222,7 +219,7 @@ const Admin = () => {
   const handleDelete = async (productId) => {
     if (!window.confirm("Delete this product?")) return;
     try {
-      const response = await fetch(`${API_BASE}/products/${productId}`, {
+      const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
         method: "DELETE",
         credentials: "include",
         headers: getAuthHeaders(),
@@ -238,13 +235,16 @@ const Admin = () => {
 
   const handleToggleBestSeller = async (product) => {
     const shouldBeBestSeller = !isBestSellerProduct(product);
+    const storedName = product.productName || product.name || "";
     try {
-      const response = await fetch(`${API_BASE}/products/${product._id || product.id}`, {
+      const response = await fetch(`${API_BASE_URL}/products/${product._id || product.id}`, {
         method: "PATCH",
         credentials: "include",
         headers: getAuthHeaders(true),
         body: JSON.stringify({
-          productName: getStoredProductName(product.productName || product.name, shouldBeBestSeller),
+          ...(storedName.toLowerCase().startsWith("best-seller:")
+            ? { productName: getProductDisplayName(storedName) }
+            : {}),
           isBestSeller: shouldBeBestSeller,
         }),
       });
@@ -403,19 +403,9 @@ const Admin = () => {
                 className="mt-2 block w-full rounded-xl border border-pink-200 bg-pink-50 p-3"
               />
             </label>
-            <label className="block text-sm font-medium text-rose-900 md:col-span-2">
-              Description
-              <textarea
-                name="description"
-                value={form.description}
-                onChange={handleInputChange}
-                rows="3"
-                className="mt-2 w-full rounded-xl border border-pink-200 bg-pink-50 px-3 py-3"
-              />
-            </label>
             {form.url && (
               <div className="md:col-span-2">
-                <img src={form.url} alt="Product preview" className="h-40 w-32 rounded-xl object-cover" />
+                <img src={form.url} alt="Product preview" className="product-image h-40 w-32 rounded-xl object-cover" />
               </div>
             )}
             {editingId && (
@@ -468,7 +458,7 @@ const Admin = () => {
                   <img
                     src={product.url || product.images?.[0]}
                     alt={product.productName || product.name}
-                    className="h-20 w-20 rounded-xl object-cover"
+                    className="product-image h-20 w-20 rounded-xl object-cover"
                   />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold text-rose-950">
@@ -490,9 +480,10 @@ const Admin = () => {
                   <button
                     type="button"
                     onClick={() => handleToggleBestSeller(product)}
-                    className="rounded-full border border-pink-300 bg-white px-2 py-2 text-xs font-semibold text-rose-900"
+                    aria-label={`${isBestSellerProduct(product) ? "Remove from" : "Add to"} Best Sellers: ${getProductDisplayName(product.productName || product.name)}`}
+                    className="min-w-0 rounded-full border border-pink-300 bg-white px-1 py-2 text-[10px] font-semibold leading-tight text-rose-900 sm:px-2 sm:text-xs"
                   >
-                    {isBestSellerProduct(product) ? "Remove best" : "Add best"}
+                    {isBestSellerProduct(product) ? "Remove from Best Sellers" : "Add to Best Sellers"}
                   </button>
                   <button
                     type="button"

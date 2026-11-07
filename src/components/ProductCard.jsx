@@ -30,7 +30,7 @@ const ProductCard = ({ product }) => {
             <img
               src={product.images[0]}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className="product-image w-full h-full object-cover"
               loading="lazy"
             />
 
@@ -99,8 +99,6 @@ const ProductCard = ({ product }) => {
             </h3>
 
           </Link>
-
-          <p className="mt-1 text-xs text-gray-500">Sizes: S to 6XL</p>
 
           <div className="flex items-center gap-2 mt-2">
 

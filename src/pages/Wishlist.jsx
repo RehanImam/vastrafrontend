@@ -93,7 +93,7 @@ const Wishlist = () => {
                   <img
                     src={item.images[0]}
                     alt={item.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="product-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     loading="lazy"
                   />
                 </Link>

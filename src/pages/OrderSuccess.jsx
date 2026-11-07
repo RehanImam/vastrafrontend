@@ -333,7 +333,7 @@ const OrderSuccess = () => {
                   <img
                     src={item.images[0]}
                     alt={item.name}
-                    className="w-16 sm:w-20 aspect-[4/5] object-cover rounded-2xl bg-pink-50 border border-pink-100 shadow-sm shrink-0"
+                    className="product-image w-16 sm:w-20 aspect-[4/5] object-cover rounded-2xl bg-pink-50 border border-pink-100 shadow-sm shrink-0"
                   />
                   <div>
                     <h4 className="font-serif text-sm sm:text-base font-bold text-maroon-950">

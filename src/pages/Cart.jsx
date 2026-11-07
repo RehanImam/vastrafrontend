@@ -87,7 +87,7 @@ const Cart = () => {
                 <img
                   src={item.images[0]}
                   alt={item.name}
-                  className="w-24 sm:w-32 aspect-[4/5] object-cover rounded-2xl"
+                  className="product-image w-24 sm:w-32 aspect-[4/5] object-cover rounded-2xl"
                 />
 
                 <div className="flex-1">

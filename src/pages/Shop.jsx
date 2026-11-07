@@ -211,7 +211,7 @@ const Shop = () => {
                       <img
                         src={product.images && product.images[0]}
                         alt={product.name}
-                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                        className="product-image w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                       />
                     </Link>
@@ -254,7 +254,6 @@ const Shop = () => {
                           {product.name}
                         </h3>
                       </Link>
-                      <p className="mt-1 text-[11px] text-gray-500">Sizes: S to 6XL</p>
                       <div className="flex items-center gap-2 mt-1">
                         <p className="text-[#4a0e17] font-bold text-sm sm:text-base">
                           ₹{product.price.toLocaleString()}

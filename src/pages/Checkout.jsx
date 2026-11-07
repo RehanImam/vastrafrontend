@@ -487,7 +487,7 @@ const Checkout = () => {
                     <img
                       src={item.images[0]}
                       alt={item.name}
-                      className="w-14 h-16 object-cover rounded-xl bg-pink-50"
+                      className="product-image w-14 h-16 object-cover rounded-xl bg-pink-50"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-maroon-950 truncate">

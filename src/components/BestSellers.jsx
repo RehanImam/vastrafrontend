@@ -60,7 +60,7 @@ const BestSellers = () => {
                         <img
                           src={product.images && product.images[0]}
                           alt={product.name}
-                          className="w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500"
+                          className="product-image w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500"
                         />
                       </Link>
 
@@ -89,7 +89,6 @@ const BestSellers = () => {
                       <h3 className="text-sm font-serif text-gray-900 font-medium truncate group-hover/card:text-[#4a0e17]">
                         {product.name}
                       </h3>
-                      <p className="mt-1 text-xs text-gray-500">Sizes: S to 6XL</p>
                       <div className="flex items-center gap-2 mt-1">
                         <p className="text-[#4a0e17] font-bold text-sm">
                           ₹{product.price.toLocaleString()}

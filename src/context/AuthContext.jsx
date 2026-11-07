@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import API_BASE_URL from "../config/api";
 
 const AuthContext = createContext(null);
-const API_BASE_URL = "https://auth-backend-gules.vercel.app/api/v1";
 
 const getErrorMessage = (payload, fallback) =>
   payload?.message || payload?.errors?.[0]?.msg || fallback;
@@ -42,6 +42,9 @@ export const AuthProvider = ({ children }) => {
       method: "POST",
       body: JSON.stringify(credentials),
     });
+    if (payload.data?.accessToken) {
+      localStorage.setItem("accessToken", payload.data.accessToken);
+    }
     setUser(payload.data.user);
     return payload;
   };
@@ -57,6 +60,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     await request("/auth/logout", { method: "POST" });
+    localStorage.removeItem("accessToken");
     setUser(null);
   };
 
