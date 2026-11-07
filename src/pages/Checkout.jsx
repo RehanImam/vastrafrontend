@@ -481,7 +481,7 @@ const Checkout = () => {
               <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
                 {cart.map((item) => (
                   <div
-                    key={`${item.id}-${item.size}`}
+                    key={item.id}
                     className="flex items-center gap-3 py-2 border-b border-pink-50 last:border-0"
                   >
                     <img
@@ -494,7 +494,6 @@ const Checkout = () => {
                         {item.name}
                       </p>
                       <p className="text-[11px] text-gray-500 mt-0.5">
-                        Size: <span className="font-medium">{item.size}</span> ·
                         Qty: <span className="font-medium">{item.quantity}</span>
                       </p>
                       <p className="text-xs font-bold text-maroon-800 mt-1">

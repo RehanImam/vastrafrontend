@@ -8,18 +8,6 @@ export const PRODUCT_CATEGORIES = [
 
 export const SHOP_CATEGORIES = ["All", ...PRODUCT_CATEGORIES];
 
-export const PRODUCT_SIZES = [
-  "S",
-  "M",
-  "L",
-  "XL",
-  "XXL",
-  "3XL",
-  "4XL",
-  "5XL",
-  "6XL",
-];
-
 const BEST_SELLER_NAME_PREFIX = "best-seller:";
 
 export const isBestSellerProduct = (product) =>

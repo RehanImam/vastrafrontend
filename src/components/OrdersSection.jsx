@@ -209,7 +209,7 @@ const OrdersSection = ({ activeTab, setActiveTab }) => {
                               {getProductDisplayName(item.productName)}
                             </p>
                             <p className="text-gray-600">
-                              Size: {item.size} • Qty: {item.quantity}
+                              Qty: {item.quantity}
                             </p>
                           </div>
                           <p className="font-semibold text-gray-900">

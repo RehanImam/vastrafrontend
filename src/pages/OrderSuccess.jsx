@@ -326,7 +326,7 @@ const OrderSuccess = () => {
           <div className="divide-y divide-pink-100">
             {items.map((item) => (
               <div
-                key={`${item.id}-${item.size}`}
+                key={item.id || item.productId}
                 className="py-4 flex items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-4">
@@ -340,7 +340,7 @@ const OrderSuccess = () => {
                       {getProductDisplayName(item.name)}
                     </h4>
                     <p className="text-xs text-gray-500 mt-1">
-                      Size: <span className="font-semibold text-maroon-900">{item.size}</span> · Quantity: <span className="font-semibold text-maroon-900">{item.quantity}</span>
+                      Quantity: <span className="font-semibold text-maroon-900">{item.quantity}</span>
                     </p>
                     <p className="text-xs text-gray-400 mt-0.5">
                       Category: {item.category || "Designer Wear"}

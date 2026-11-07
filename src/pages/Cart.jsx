@@ -80,7 +80,7 @@ const Cart = () => {
             {cart.map((item) => (
 
               <div
-                key={`${item.id}-${item.size}`}
+                key={item.id}
                 className="bg-white rounded-[25px] p-4 sm:p-5 flex gap-4"
               >
 
@@ -103,18 +103,11 @@ const Cart = () => {
                         {item.name}
                       </Link>
 
-                      <p className="text-sm text-gray-500 mt-1">
-                        Size: {item.size}
-                      </p>
-
                     </div>
 
                     <button
                       onClick={() =>
-                        removeFromCart(
-                          item.id,
-                          item.size
-                        )
+                        removeFromCart(item.id)
                       }
                       className="text-gray-400 hover:text-red-500"
                     >
@@ -129,10 +122,7 @@ const Cart = () => {
 
                       <button
                         onClick={() =>
-                          decreaseQuantity(
-                            item.id,
-                            item.size
-                          )
+                          decreaseQuantity(item.id)
                         }
                         className="p-2"
                       >
@@ -145,10 +135,7 @@ const Cart = () => {
 
                       <button
                         onClick={() =>
-                          increaseQuantity(
-                            item.id,
-                            item.size
-                          )
+                          increaseQuantity(item.id)
                         }
                         className="p-2"
                       >

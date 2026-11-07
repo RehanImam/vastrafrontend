@@ -122,7 +122,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 {cart.map((item) => (
 
                   <div
-                    key={`${item.id}-${item.size}`}
+                    key={item.id}
                     className="bg-white rounded-2xl p-3 shadow-sm"
                   >
 
@@ -160,10 +160,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
 
                           <button
                             onClick={() =>
-                              removeFromCart(
-                                item.id,
-                                item.size
-                              )
+                              removeFromCart(item.id)
                             }
                             className="text-gray-400 hover:text-red-500 flex-shrink-0"
                           >
@@ -171,10 +168,6 @@ const CartDrawer = ({ isOpen, onClose }) => {
                           </button>
 
                         </div>
-
-                        <p className="text-xs text-gray-500 mt-1">
-                          Size: {item.size}
-                        </p>
 
                         <div className="flex items-center justify-between mt-4">
 
@@ -184,10 +177,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
 
                             <button
                               onClick={() =>
-                                decreaseQuantity(
-                                  item.id,
-                                  item.size
-                                )
+                                decreaseQuantity(item.id)
                               }
                               className="p-2 hover:text-maroon-700"
                             >
@@ -200,10 +190,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
 
                             <button
                               onClick={() =>
-                                increaseQuantity(
-                                  item.id,
-                                  item.size
-                                )
+                                increaseQuantity(item.id)
                               }
                               className="p-2 hover:text-maroon-700"
                             >

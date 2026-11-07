@@ -7,16 +7,18 @@ import {
   useState,
 } from "react";
 
-import { products as staticProducts } from "../data/products";
 import {
   getProductDisplayName,
   isBestSellerProduct,
   normalizeCategory,
-  PRODUCT_SIZES,
 } from "../data/productOptions";
 import API_BASE_URL from "../config/api";
 
 const normalizeProduct = (product, fallbackId = Date.now()) => {
+  const normalizedProduct = { ...product };
+  delete normalizedProduct.size;
+  delete normalizedProduct.sizes;
+
   const images = Array.isArray(product?.images) && product.images.length > 0
     ? product.images
     : Array.isArray(product?.image) && product.image.length > 0
@@ -24,7 +26,7 @@ const normalizeProduct = (product, fallbackId = Date.now()) => {
       : [product?.url || product?.imageUrl || ""];
 
   return {
-    ...product,
+    ...normalizedProduct,
     id: product?.id ?? product?._id ?? fallbackId,
     name: getProductDisplayName(product?.name || product?.productName) || "Untitled Product",
     productName: product?.productName || product?.name || "Untitled Product",
@@ -34,14 +36,22 @@ const normalizeProduct = (product, fallbackId = Date.now()) => {
     rating: Number(product?.rating || 0),
     reviews: Number(product?.reviews || 0),
     description: product?.description || "",
-    sizes: PRODUCT_SIZES,
     isBestSeller: isBestSellerProduct(product),
     images: images.filter(Boolean),
     badge: product?.badge || "",
   };
 };
 
-const allProducts = [...staticProducts.map((product) => normalizeProduct(product, product.id))];
+const normalizeCartItems = (items) =>
+  items.map((item) => normalizeProduct(item)).reduce((normalized, item) => {
+    const existing = normalized.find((product) => product.id === item.id);
+    if (existing) {
+      existing.quantity += Number(item.quantity) || 1;
+    } else {
+      normalized.push({ ...item, quantity: Number(item.quantity) || 1 });
+    }
+    return normalized;
+  }, []);
 
 const CartContext = createContext();
 
@@ -49,7 +59,7 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("ladies-fashion-cart");
 
-    return savedCart ? JSON.parse(savedCart).map((product) => normalizeProduct(product)) : [];
+    return savedCart ? normalizeCartItems(JSON.parse(savedCart)) : [];
   });
 
   const [wishlist, setWishlist] = useState(() => {
@@ -100,19 +110,14 @@ export const CartProvider = ({ children }) => {
   const openCartDrawer = () => setIsCartDrawerOpen(true);
   const closeCartDrawer = () => setIsCartDrawerOpen(false);
 
-  const addToCart = (product, size = product?.sizes?.[0] || "M", showDrawer = true) => {
+  const addToCart = (product, showDrawer = true) => {
     if (!product) return;
     setCart((prev) => {
-      const existing = prev.find(
-        (item) =>
-          item.id === product.id &&
-          (size ? item.size === size : true)
-      );
+      const existing = prev.find((item) => item.id === product.id);
 
       if (existing) {
         return prev.map((item) =>
-          item.id === product.id &&
-          (size ? item.size === size : true)
+          item.id === product.id
             ? {
                 ...item,
                 quantity: item.quantity + 1,
@@ -125,7 +130,6 @@ export const CartProvider = ({ children }) => {
         ...prev,
         {
           ...product,
-          size: size || product?.sizes?.[0] || "M",
           quantity: 1,
         },
       ];
@@ -136,19 +140,14 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const removeFromCart = (id, size) => {
-    setCart((prev) =>
-      prev.filter(
-        (item) =>
-          !(item.id === id && (size ? item.size === size : true))
-      )
-    );
+  const removeFromCart = (id) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const increaseQuantity = (id, size) => {
+  const increaseQuantity = (id) => {
     setCart((prev) =>
       prev.map((item) =>
-        item.id === id && (size ? item.size === size : true)
+        item.id === id
           ? {
               ...item,
               quantity: item.quantity + 1,
@@ -158,11 +157,11 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  const decreaseQuantity = (id, size) => {
+  const decreaseQuantity = (id) => {
     setCart((prev) =>
       prev
         .map((item) =>
-          item.id === id && (size ? item.size === size : true)
+          item.id === id
             ? {
                 ...item,
                 quantity: item.quantity - 1,
@@ -212,7 +211,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const mergedProducts = useMemo(
-    () => [...allProducts, ...dbProducts],
+    () => dbProducts,
     [dbProducts]
   );
 

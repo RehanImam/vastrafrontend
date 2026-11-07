@@ -163,15 +163,6 @@ const Footer = () => {
 
               <li>
                 <Link
-                  to="/size-guide"
-                  className="text-pink-100/80 hover:text-[#F4A6B8] transition"
-                >
-                  Size Guide
-                </Link>
-              </li>
-
-              <li>
-                <Link
                   to="/faq"
                   className="text-pink-100/80 hover:text-[#F4A6B8] transition"
                 >

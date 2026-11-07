@@ -19,7 +19,6 @@ const ProductDetails = () => {
   const product = mergedProducts.find((item) => String(item.id) === String(id));
 
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0]);
   const [quantity, setQuantity] = useState(1);
 
   if (!product) {
@@ -32,13 +31,13 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
-      addToCart(product, selectedSize);
+      addToCart(product);
     }
   };
 
   const handleBuyNow = () => {
     for (let i = 0; i < quantity; i++) {
-      addToCart(product, selectedSize, false);
+      addToCart(product, false);
     }
     navigate("/checkout");
   };
@@ -160,35 +159,6 @@ const ProductDetails = () => {
             )}
 
             <div className="h-px bg-pink-100 my-7" />
-
-            {/* Size */}
-            <div>
-              <div className="flex justify-between mb-3">
-                <span className="font-semibold text-maroon-900">
-                  Select Size (S to 6XL)
-                </span>
-
-                <button className="text-sm text-maroon-700 underline">
-                  Size Guide
-                </button>
-              </div>
-
-              <div className="flex gap-2 flex-wrap">
-                {product.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-12 h-12 rounded-full border transition ${
-                      selectedSize === size
-                        ? "bg-maroon-800 text-white border-maroon-800"
-                        : "bg-white border-pink-200 text-maroon-800 hover:border-maroon-500"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
 
             {/* Quantity */}
             <div className="mt-7">
