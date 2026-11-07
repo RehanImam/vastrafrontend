@@ -115,6 +115,7 @@ body {
 
 .product-image {
   object-fit: contain !important;
+  object-position: center !important;
   transform: none !important;
 }
 
